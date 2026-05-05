@@ -15,7 +15,7 @@ AI-powered concert recap generator. Enter an artist and show date, and Setlist A
 - Shareable recap card with concert tags and rating
 - Clean editorial UI built with React + TypeScript
 
-## Tech stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -25,7 +25,7 @@ AI-powered concert recap generator. Enter an artist and show date, and Setlist A
 | Data | Setlist.fm REST API |
 | Styling | Custom CSS |
 
-## Getting started
+## Getting Started
 
 ### Prerequisites
 - Node.js 18+
@@ -55,7 +55,7 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## How it works
+## How it Works
 
 1. User searches for an artist (+ optional date)
 2. Client calls `GET /api/search` → server queries Setlist.fm API
@@ -64,7 +64,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 5. Gemini returns structured JSON: headline, song highlights, tags, and rating
 6. Frontend renders the recap card with share functionality
 
-## Project structure
+## Project Structure
 
 ```
 setlist-ai/
@@ -78,13 +78,6 @@ setlist-ai/
         ├── routes/       # /api/search, /api/recap
         └── services/     # setlistFm.ts, gemini.ts
 ```
-
-## Stretch goals
-
-- [ ] Spotify API integration for song preview embeds
-- [ ] Social share image generation (canvas/html2canvas)
-- [ ] Save recap history to localStorage
-- [ ] "Surprise me" — random show from a given artist's history
 
 ## License
 
