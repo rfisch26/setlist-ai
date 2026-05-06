@@ -1,11 +1,11 @@
 # Setlist AI 🎵
 
-AI-powered concert recap generator. Enter an artist and show date, and Setlist AI pulls the real setlist then uses Gemini to write a personalized, journalist-style recap of the night.
+AI-powered concert recap generator. Enter an artist and show date, and Setlist AI pulls the real setlist then uses Groq to write a personalized, journalist-style recap of the night.
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=flat-square&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js&logoColor=white)
-![Gemini](https://img.shields.io/badge/Gemini-AI-4285F4?style=flat-square&logo=googlegemini&logoColor=white)
+![Groq](https://img.shields.io/badge/Groq-AI-F55036?style=flat-square&logo=groq&logoColor=white)
 
 ## Features
 
@@ -21,7 +21,7 @@ AI-powered concert recap generator. Enter an artist and show date, and Setlist A
 |---|---|
 | Frontend | React 18, TypeScript, Vite |
 | Backend | Node.js, Express, TypeScript |
-| AI | Google Gemini |
+| AI | Groq |
 | Data | Setlist.fm REST API |
 | Styling | Custom CSS |
 
@@ -30,7 +30,7 @@ AI-powered concert recap generator. Enter an artist and show date, and Setlist A
 ### Prerequisites
 - Node.js 18+
 - [Setlist.fm API key](https://api.setlist.fm/docs/1.0/index.html) (free)
-- [Gemini API key](https://aistudio.google.com/app/apikey)
+- [Groq API key](https://console.groq.com/keys)
 
 ### Setup
 
@@ -60,8 +60,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 1. User searches for an artist (+ optional date)
 2. Client calls `GET /api/search` → server queries Setlist.fm API
 3. User selects a show from the results
-4. Client calls `POST /api/recap` → server fetches full setlist, builds a prompt, and sends it to Gemini
-5. Gemini returns structured JSON: headline, song highlights, tags, and rating
+4. Client calls `POST /api/recap` → server fetches full setlist, builds a prompt, and sends it to Groq
+5. Groq returns structured JSON: headline, song highlights, tags, and rating
 6. Frontend renders the recap card with share functionality
 
 ## Project Structure
@@ -76,7 +76,7 @@ setlist-ai/
 └── server/          # Node.js + Express
     └── src/
         ├── routes/       # /api/search, /api/recap
-        └── services/     # setlistFm.ts, gemini.ts
+        └── services/     # setlistFm.ts, groq.ts
 ```
 
 ## License
