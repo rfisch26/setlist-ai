@@ -35,7 +35,7 @@ AI-powered concert recap generator. Enter an artist and show date, and Setlist A
 ### Setup
 
 ```bash
-git clone https://github.com/yourusername/setlist-ai
+git clone https://github.com/rfisch26/setlist-ai
 cd setlist-ai
 
 # Set up environment variables
