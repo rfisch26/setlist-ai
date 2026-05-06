@@ -1,20 +1,41 @@
 import { Router, Request, Response } from "express";
 import { searchSetlists, getSetlistById, flattenSongs } from "../services/setlistFm";
-import { generateRecap } from "../services/gemini";
+import { generateRecap } from "../services/groq";
+import { MOCK_SEARCH_RESULTS, getMockSetlistById } from "../services/mockSetlist";
 
 const router = Router();
 
-function sanitizeError(err: unknown): string {
-  const raw = JSON.stringify(err, Object.getOwnPropertyNames(err as object));
-  return raw.replace(/x-api-key[^,}\]"]*/gi, "x-api-key: [REDACTED]");
+function isMock(): boolean {
+  return process.env.MOCK_SETLIST === "true";
 }
 
-// GET /api/search?artist=Taylor+Swift&date=2024-10-18
+function sanitizeError(err: unknown): string {
+  const raw = JSON.stringify(err, Object.getOwnPropertyNames(err as object));
+  return raw
+    .replace(/x-api-key[^,}\]"]*/gi, "x-api-key: [REDACTED]")
+    .replace(/Authorization[^,}\]"]*/gi, "Authorization: [REDACTED]");
+}
+
 router.get("/search", async (req: Request, res: Response) => {
   const { artist, date } = req.query;
 
   if (!artist || typeof artist !== "string") {
     res.status(400).json({ error: "artist query param is required" });
+    return;
+  }
+
+  if (isMock()) {
+    console.log("⚠️  MOCK MODE — returning fake setlist data");
+    const setlists = MOCK_SEARCH_RESULTS.setlist.map((s) => ({
+      id: s.id,
+      artist: s.artist.name,
+      venue: `${s.venue.name}, ${s.venue.city.name}`,
+      date: s.eventDate,
+      songCount: s.sets.set.flatMap((set) => set.song).length,
+      url: s.url,
+      tour: s.tour?.name,
+    }));
+    res.json({ setlists, total: MOCK_SEARCH_RESULTS.total });
     return;
   }
 
@@ -37,7 +58,6 @@ router.get("/search", async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/recap  { setlistId: string }
 router.post("/recap", async (req: Request, res: Response) => {
   const { setlistId } = req.body;
 
@@ -47,7 +67,7 @@ router.post("/recap", async (req: Request, res: Response) => {
   }
 
   try {
-    const setlist = await getSetlistById(setlistId);
+    const setlist = isMock() ? getMockSetlistById(setlistId) : await getSetlistById(setlistId);
     const songs = flattenSongs(setlist);
 
     if (songs.length === 0) {
