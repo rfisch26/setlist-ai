@@ -55,6 +55,20 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
+## Mock Mode
+ 
+If you don't have a Setlist.fm API key yet, you can run the app with built-in mock data to test the full AI recap flow.
+ 
+Add this to `server/.env`:
+ 
+```bash
+MOCK_SETLIST=true
+```
+ 
+Restart the server — you'll see `⚠️  MOCK MODE` in the logs. Search for any artist name and you'll get a set of sample Chappell Roan Chicago shows to generate recaps from. The Groq AI integration runs normally in mock mode.
+ 
+To switch back to the real Setlist.fm API, set `MOCK_SETLIST=false` or remove the line entirely.
+
 ## How it Works
 
 1. User searches for an artist (+ optional date)
