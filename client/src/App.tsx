@@ -32,7 +32,7 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ setlistId: setlist.id }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: "The server returned an invalid response." }));
       if (!res.ok) throw new Error(data.error || "Failed to generate recap");
       setRecap(data as RecapResponse);
       setState("recap");
@@ -57,8 +57,9 @@ export default function App() {
               <div className="logo-mark">♪</div>
               <h1 className="app-title">Setlist AI</h1>
               <p className="app-subtitle">
-                Enter an artist and date — get a personalized concert recap
-                written by AI.
+                A retrieval-grounded AI demo: pull live concert context, ground
+                the prompt in real setlist data, and generate a journalist-style
+                recap in one polished flow.
               </p>
             </header>
             <SearchForm onSelectSetlist={handleSelectSetlist} />

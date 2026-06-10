@@ -1,8 +1,8 @@
 const MESSAGES = [
-  "Pulling the setlist…",
-  "Reviewing the song choices…",
-  "Channeling our inner music journalist…",
-  "Crafting your concert story…",
+  "Retrieving the live setlist context…",
+  "Grounding the prompt with real concert details…",
+  "Running the LLM recap workflow…",
+  "Formatting the final structured response…",
 ];
 
 interface Props {

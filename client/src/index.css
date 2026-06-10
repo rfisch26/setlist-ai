@@ -293,22 +293,26 @@ body {
 
 .highlights-list { display: flex; flex-direction: column; gap: 1.25rem; }
 
-.highlight-item { display: flex; gap: 1rem; }
+.highlight-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
 
 .highlight-song {
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
-  white-space: nowrap;
   color: var(--ink);
-  padding-top: 0.1rem;
-  min-width: 0;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .highlight-commentary {
   font-size: 0.9rem;
   line-height: 1.65;
   color: var(--ink-muted);
+  margin-left: 0.1rem;
 }
 
 .recap-closing {

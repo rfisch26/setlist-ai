@@ -2,6 +2,7 @@ import type { Setlist, SetlistSong } from "./setlistFm";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const MODEL = "llama-3.3-70b-versatile"; // best free Groq model for creative writing
+const PROMPT_VERSION = "prompt-v1.1";
 
 export interface RecapResult {
   headline: string;
@@ -59,11 +60,19 @@ Be specific and enthusiastic. Respond with valid JSON only — no markdown fence
 }
 
 export async function generateRecap(setlist: Setlist, songs: SetlistSong[]): Promise<RecapResult> {
+  console.info("[AI pipeline] prompt_build", {
+    promptVersion: PROMPT_VERSION,
+    artist: setlist.artist.name,
+    venue: `${setlist.venue.name}, ${setlist.venue.city.name}`,
+    songCount: songs.length,
+    eventDate: setlist.eventDate,
+  });
+
   const response = await fetch(GROQ_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.GROQ_API_KEY || ""}`,
+      "Authorization": `Bearer ${process.env.GROQ_API_KEY || process.env.Groq_API_KEY || ""}`,
     },
     body: JSON.stringify({
       model: MODEL,
@@ -72,6 +81,13 @@ export async function generateRecap(setlist: Setlist, songs: SetlistSong[]): Pro
       temperature: 0.9,
       response_format: { type: "json_object" }, // forces clean JSON — no fences
     }),
+  });
+
+  console.info("[AI pipeline] llm_request", {
+    promptVersion: PROMPT_VERSION,
+    model: MODEL,
+    responseFormat: "json_object",
+    songCount: songs.length,
   });
 
   if (!response.ok) {

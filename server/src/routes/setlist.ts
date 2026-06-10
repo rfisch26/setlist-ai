@@ -6,7 +6,13 @@ import { MOCK_SEARCH_RESULTS, getMockSetlistById } from "../services/mockSetlist
 const router = Router();
 
 function isMock(): boolean {
-  return process.env.MOCK_SETLIST === "true";
+  const hasKey = Boolean(process.env.SETLIST_FM_API_KEY && process.env.SETLIST_FM_API_KEY.trim());
+  return process.env.MOCK_SETLIST === "true" || !hasKey;
+}
+
+function shouldUseMockFallback(err: unknown): boolean {
+  const status = (err as { response?: { status?: number } })?.response?.status;
+  return status === 401 || status === 403;
 }
 
 function sanitizeError(err: unknown): string {
@@ -52,6 +58,21 @@ router.get("/search", async (req: Request, res: Response) => {
     }));
     res.json({ setlists, total: results.total });
   } catch (err: unknown) {
+    if (shouldUseMockFallback(err)) {
+      console.warn("Setlist.fm API rejected the request; falling back to mock setlists.");
+      const setlists = MOCK_SEARCH_RESULTS.setlist.map((s) => ({
+        id: s.id,
+        artist: s.artist.name,
+        venue: `${s.venue.name}, ${s.venue.city.name}`,
+        date: s.eventDate,
+        songCount: s.sets.set.flatMap((set) => set.song).length,
+        url: s.url,
+        tour: s.tour?.name,
+      }));
+      res.json({ setlists, total: MOCK_SEARCH_RESULTS.total });
+      return;
+    }
+
     console.error("Setlist search error:", sanitizeError(err));
     const status = (err as { response?: { status?: number } })?.response?.status || 500;
     res.status(status).json({ error: "Failed to search setlists" });
@@ -67,7 +88,23 @@ router.post("/recap", async (req: Request, res: Response) => {
   }
 
   try {
-    const setlist = isMock() ? getMockSetlistById(setlistId) : await getSetlistById(setlistId);
+    let setlist;
+
+    if (isMock()) {
+      setlist = getMockSetlistById(setlistId);
+    } else {
+      try {
+        setlist = await getSetlistById(setlistId);
+      } catch (err) {
+        if (shouldUseMockFallback(err)) {
+          console.warn("Setlist.fm API rejected the recap lookup; falling back to mock data.");
+          setlist = getMockSetlistById(setlistId);
+        } else {
+          throw err;
+        }
+      }
+    }
+
     const songs = flattenSongs(setlist);
 
     if (songs.length === 0) {
@@ -88,9 +125,14 @@ router.post("/recap", async (req: Request, res: Response) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Recap generation error:", sanitizeError(err));
     const status = (err as { response?: { status?: number } })?.response?.status || 500;
-    res.status(status).json({ error: "Failed to generate recap" });
+    const details = sanitizeError(err);
+    console.error("Recap generation error:", details);
+    res.status(status).json({
+      error: "Failed to generate recap",
+      details,
+      status,
+    });
   }
 });
 

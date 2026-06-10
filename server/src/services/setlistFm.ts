@@ -26,13 +26,15 @@ export interface SearchResult {
   itemsPerPage: number;
 }
 
-const client = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    Accept: "application/json",
-    "x-api-key": process.env.SETLIST_FM_API_KEY || "",
-  },
-});
+function getClient() {
+  return axios.create({
+    baseURL: BASE_URL,
+    headers: {
+      Accept: "application/json",
+      "x-api-key": process.env.SETLIST_FM_API_KEY || "",
+    },
+  });
+}
 
 async function withRetry<T>(fn: () => Promise<T>, maxAttempts = 3): Promise<T> {
   let lastError: unknown;
@@ -61,6 +63,7 @@ export async function searchSetlists(artistName: string, date?: string): Promise
   }
   try {
     return await withRetry(async () => {
+      const client = getClient();
       const response = await client.get<SearchResult>("/search/setlists", { params });
       return response.data;
     });
@@ -74,6 +77,7 @@ export async function searchSetlists(artistName: string, date?: string): Promise
 
 export async function getSetlistById(setlistId: string): Promise<Setlist> {
   return withRetry(async () => {
+    const client = getClient();
     const response = await client.get<Setlist>(`/setlist/${setlistId}`);
     return response.data;
   });

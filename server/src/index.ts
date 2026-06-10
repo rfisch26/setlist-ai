@@ -1,5 +1,8 @@
+import path from "path";
 import dotenv from "dotenv";
-dotenv.config({ path: "/Users/rachelfischmar/setlist-ai/server/.env" });
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env") });
+dotenv.config({ path: path.resolve(process.cwd(), "../.env") });
 
 import express from "express";
 import cors from "cors";
@@ -11,6 +14,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 app.use("/api", setlistRoutes);
+
+app.get("/", (_req, res) => {
+  res.json({ status: "ok", message: "Setlist AI server is running" });
+});
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok" });
