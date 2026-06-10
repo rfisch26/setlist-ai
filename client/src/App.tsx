@@ -57,9 +57,7 @@ export default function App() {
               <div className="logo-mark">♪</div>
               <h1 className="app-title">Setlist AI</h1>
               <p className="app-subtitle">
-                A retrieval-grounded AI demo: pull live concert context, ground
-                the prompt in real setlist data, and generate a journalist-style
-                recap in one polished flow.
+                AI-powered concert recap generator with an end-to-end retrieval + generation workflow. Enter an artist and show date, and Setlist AI retrieves real setlist data, grounds the prompt in that context, and uses an LLM to produce a structured, journalist-style recap.
               </p>
             </header>
             <SearchForm onSelectSetlist={handleSelectSetlist} />
