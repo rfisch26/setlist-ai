@@ -77,15 +77,6 @@ Restart the server — you'll see `⚠️  MOCK MODE` in the logs. Search for an
  
 To switch back to the real Setlist.fm API, set `MOCK_SETLIST=false` or remove the line entirely.
 
-## Demo Narrative
-
-Use this 2-minute story when you present it live:
-
-1. Start with the problem: concert recaps are usually written from memory or static metadata, which makes them shallow and inconsistent.
-2. Show the solution: this app retrieves real setlist data first, then uses an LLM to generate a structured recap grounded in that context.
-3. Emphasize the engineering choices: prompt design, structured JSON outputs, API integration, and a clean full-stack flow that can be extended with observability and evaluation.
-4. Close with impact: it demonstrates real product thinking for an AI platform team, not just a demo widget.
-
 ## How it Works
 
 1. User searches for an artist (+ optional date)
